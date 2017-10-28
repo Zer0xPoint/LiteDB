@@ -1,0 +1,5 @@
+<databases>
+  <database id="1">
+    <name>test</name>
+  </database>
+<database id="2"><name /></database><database id="3"><name /></database><database id="4"><name /></database></databases>

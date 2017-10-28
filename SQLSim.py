@@ -1,16 +1,5 @@
 import Database
 
-def split_command(command):
-    command = command.strip()
-    command_split = command.split()
-    try:
-        return {
-            "create": create_database,
-        }.get(command_split[0], error_info)(command)
-    except TypeError:
-        print("TypeError")
-    except IndexError:
-        print("IndexError")
 
 def get_command():
     while True:
@@ -21,9 +10,35 @@ def get_command():
         split_command(command)
 
 
+def split_command(command):
+    command = command.strip()
+    command_split = command.split()
+    try:
+        return {
+            "create": create_database_or_table,
+        }.get(command_split[0], error_info)(command)
+    except TypeError:
+        print("TypeError")
+    except IndexError:
+        print("IndexError")
+
+
+def create_database_or_table(command):
+    command = command.strip()
+    command_split = command.split()
+    try:
+        return {
+            "database": create_database,
+            "table": create_table
+        }.get(command_split[1], error_info)(command)
+    except TypeError:
+        print("TypeError1")
+    except IndexError:
+        print("IndexError1")
+
+
 def create_database(command):
-    print("Create new Databases")
-    Database.create_new_database()
+    Database.create_new_database(command)
 
 
 # def delete_database():
@@ -32,8 +47,10 @@ def create_database(command):
 #
 # def use_database():
 #
-# def create_table():
-#
+def create_table(command):
+    print("create Table")
+
+
 # def delete_table():
 #
 # def update_table():
