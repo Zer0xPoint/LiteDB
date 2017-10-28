@@ -2,10 +2,15 @@ import Database
 
 def split_command(command):
     command = command.strip()
-    return {
-        "create": create_database
-    }.get(command.split()[0], error_info())(command)
-
+    command_split = command.split()
+    try:
+        return {
+            "create": create_database,
+        }.get(command_split[0], error_info)(command)
+    except TypeError:
+        print("TypeError")
+    except IndexError:
+        print("IndexError")
 
 def get_command():
     while True:
@@ -13,9 +18,6 @@ def get_command():
         if command == "exit":
             print("Bye")
             break
-        # elif len(command) <= 3:
-        #     error_info()
-        #     continue
         split_command(command)
 
 
@@ -41,4 +43,4 @@ def create_database(command):
 # def serach_table():
 
 def error_info():
-    print("\nsyntax Error\n")
+    print("Syntax Error")
