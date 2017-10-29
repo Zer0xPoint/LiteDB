@@ -1,5 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
 <databases>
-  <database id="1">
-    <name>test</name>
-  </database>
-<database id="2"><name /></database><database id="3"><name /></database><database id="4"><name /></database></databases>
+	<database name="test">
+		<date>Sun Oct 29 21:23:37 2017</date>
+	</database>
+	<database name="test01">
+		<date>Sun Oct 29 21:42:45 2017</date>
+	</database>
+</databases>

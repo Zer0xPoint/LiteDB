@@ -16,6 +16,7 @@ def split_command(command):
     try:
         return {
             "create": create_database_or_table,
+            "drop": drop_database_or_table
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -37,12 +38,28 @@ def create_database_or_table(command):
         print("IndexError1")
 
 
+def drop_database_or_table(command):
+    command = command.strip()
+    command_split = command.split()
+    try:
+        return {
+            "database": delete_database,
+            "table": delete_table
+        }.get(command_split[1], error_info)(command)
+    except TypeError:
+        print("TypeError1")
+    except IndexError:
+        print("IndexError1")
+
+
 def create_database(command):
     Database.create_new_database(command)
 
 
-# def delete_database():
-#
+def delete_database(command):
+    Database.drop_database(command)
+
+
 # def show_databases():
 #
 # def use_database():
@@ -51,8 +68,10 @@ def create_table(command):
     print("create Table")
 
 
-# def delete_table():
-#
+def delete_table(command):
+    print("delete Table")
+
+
 # def update_table():
 #
 # def show_table():
