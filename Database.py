@@ -1,10 +1,8 @@
 import OperatFile
 import re
 import Time
-try:
-    import xml.etree.cElementTree as et
-except ImportError:
-    import xml.etree.ElementTree as et
+import xml.etree.ElementTree as et
+
 
 
 def create_new_database(command):
@@ -13,7 +11,6 @@ def create_new_database(command):
     if command_parse:
         tree = OperatFile.read_xml("database_index.xml")
         root = tree.getroot()
-        # database_count = len(tree.findall("database"))
         new_database = et.SubElement(root, "database", attrib={"name": command_parse.group(1).strip()})
         new_db_date = et.SubElement(new_database, "date")
         new_db_date.text = Time.local_time()
@@ -25,12 +22,20 @@ def drop_database(command):
     command_parse = re.search(r'drop\s*?database\s(.*)', command)
 
     if command_parse:
-        tree = et.parse("database_index.xml")
+        tree = OperatFile.read_xml("database_index.xml")
+        # tree = et.parse("database_index.xml")
         root = tree.getroot()
-        drop_node = tree.find("database")
+        del_parent_node = OperatFile.find_nodes(tree, "databases")
+        OperatFile.del_node_by_tagkeyvalue(del_parent_node, "database", {"name": command_parse.group(1).strip()})
 
+        # del_node = root.find("database")
+        # if del_node.attrib["name"] == "test":
+        #     root.remove(del_node)
 
-        tree.write("database_index.xml")
+        # for child in root():
+        #     print(child.tag, child.attrib)
+
+        OperatFile.write_xml(tree, "database_index.xml")
 
 
 class Database(object):
