@@ -47,7 +47,7 @@ def drop_database_or_table(command):
     command_split = command.split()
     try:
         return {
-            "database": delete_database,
+            "database": drop_database,
             "table": delete_table
         }.get(command_split[1], error_info)(command)
     except TypeError:
@@ -60,14 +60,14 @@ def create_database(command):
     Database.create_new_database(command)
 
 
-def delete_database(command):
-    Database.drop_database(command)
+def drop_database(command):
+    Database.drop_new_database(command)
 
 
 # def show_databases():
 #
-def use_database():
-    print("use database")
+def use_database(command):
+    Database.use_new_database_name(command)
 
 
 def create_table(command):

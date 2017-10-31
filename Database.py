@@ -27,7 +27,7 @@ def create_new_database(command):
         OperatFile.write_xml(tree, "database_index.xml")
 
 
-def drop_database(command):
+def drop_new_database(command):
     command_parse = re.search(r'drop\s*?database\s(.*)', command)
     database_name = command_parse.group(1).strip()
 
@@ -44,6 +44,13 @@ def drop_database(command):
             print("Can't drop database '%s'; database doesn't exist" % database_name)
 
         OperatFile.write_xml(tree, "database_index.xml")
+
+
+def use_new_database_name(command):
+    command_parse = re.search(r'drop\s*?database\s(.*)', command)
+    database_name = command_parse.group(1).strip()
+    print()
+    return database_name
 
 
 def database_is_exist(root, database_name):
