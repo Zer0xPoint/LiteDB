@@ -1,12 +1,16 @@
 import Database
 
 
-def get_command():
+def get_command(last_command):
     while True:
-        command = input("LiteDB >").lower()
+        command = last_command + input("LiteDB >").lower()
+        if command == "":
+            get_command(command)
+            continue
         if command == "exit":
             print("Bye")
             break
+        print(command)
         split_command(command)
 
 
@@ -16,7 +20,8 @@ def split_command(command):
     try:
         return {
             "create": create_database_or_table,
-            "drop": drop_database_or_table
+            "drop": drop_database_or_table,
+            "use": use_database
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -62,8 +67,9 @@ def delete_database(command):
 
 # def show_databases():
 #
-# def use_database():
-#
+def use_database():
+    print("use database")
+
 def create_table(command):
     print("create Table")
 

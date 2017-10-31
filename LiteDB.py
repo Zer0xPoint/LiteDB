@@ -7,7 +7,7 @@ if __name__ == '__main__':
     while True:
         if isAuthored:
             print("Welcome to LiteDB, a Lite Databases")
-            SQLSim.get_command()
+            SQLSim.get_command("")
             break
         else:
             print("login failed, Please check your password and Renter")
