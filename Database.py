@@ -1,7 +1,7 @@
 import OperatFile
 import re
 import Time
-
+from prettytable import PrettyTable
 try:
     import xml.etree.cElementTree as et
 except ImportError:
@@ -51,6 +51,19 @@ def use_new_database_name(command):
     database_name = command_parse.group(1).strip()
     print()
     return database_name
+
+
+def show_current_databases():
+    table = PrettyTable(["Database"])
+    tree = OperatFile.read_xml("database_index.xml")
+    root = tree.getroot()
+
+    for child in root:
+        attrib_values = str(child.attrib.values())
+        show_parse = re.search(r"dict_values\W+'(.*)'\W+", attrib_values)
+        table.add_row([show_parse.group(1)])
+
+    print(table)
 
 
 def database_is_exist(root, database_name):

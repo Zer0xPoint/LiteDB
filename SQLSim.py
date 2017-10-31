@@ -20,7 +20,8 @@ def split_command(command):
         return {
             "create": create_database_or_table,
             "drop": drop_database_or_table,
-            "use": use_database
+            "use": use_database,
+            "show": show_databases
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -64,8 +65,10 @@ def drop_database(command):
     Database.drop_new_database(command)
 
 
-# def show_databases():
-#
+def show_databases(command):
+    Database.show_current_databases()
+
+
 def use_database(command):
     Database.use_new_database_name(command)
 
