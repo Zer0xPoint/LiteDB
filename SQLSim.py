@@ -10,7 +10,6 @@ def get_command(last_command):
         if command == "exit":
             print("Bye")
             break
-        print(command)
         split_command(command)
 
 
@@ -69,6 +68,7 @@ def delete_database(command):
 #
 def use_database():
     print("use database")
+
 
 def create_table(command):
     print("create Table")
