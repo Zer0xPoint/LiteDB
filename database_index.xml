@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <databases>
-	<database name="test">
-		<date>Wed Nov 01 18:42:07 2017</date>
+	<database name="first">
+		<date>Sun Oct 29 21:23:37 2017</date>
+	</database>
+	<database name="newtest">
+		<date>Tue Oct 31 19:31:57 2017</date>
 	</database>
 </databases>
