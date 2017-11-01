@@ -9,8 +9,8 @@ except ImportError:
     import xml.etree.ElementTree as et
 
 
-def create_new_database(command):
-    command_parse = re.search(r'create\s*?database\s(.*)', command)
+def create_new_database(commands):
+    command_parse = re.search(r'create\s*?database\s(.*)', commands)
     database_name = command_parse.group(1).strip()
 
     if command_parse:
@@ -22,7 +22,7 @@ def create_new_database(command):
             new_db_date = et.SubElement(new_database, "date")
             new_db_date.text = Time.local_time()
 
-            os.mkdir(database_name)
+            os.mkdir("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/%s" % database_name)
 
         else:
             print("Can't create database '%s'; database exists" % database_name)
@@ -30,8 +30,8 @@ def create_new_database(command):
         OperatFile.write_xml(tree, "database_index.xml")
 
 
-def drop_new_database(command):
-    command_parse = re.search(r'drop\s*?database\s(.*)', command)
+def drop_new_database(commands):
+    command_parse = re.search(r'drop\s*?database\s(.*)', commands)
     database_name = command_parse.group(1).strip()
 
     if command_parse:
@@ -43,16 +43,18 @@ def drop_new_database(command):
                 if child.attrib == {"name": database_name}:
                     root.remove(child)
 
+                    os.rmdir("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/%s" % database_name)
         else:
             print("Can't drop database '%s'; database doesn't exist" % database_name)
 
         OperatFile.write_xml(tree, "database_index.xml")
 
 
-def use_new_database_name(command):
+def use_new_database_name(commands):
     use_new_database_name.has_been_called = True
-    command_parse = re.search(r'drop\s*?database\s(.*)', command)
+    command_parse = re.search(r'use\s*?(.*)', commands)
     database_name = command_parse.group(1).strip()
+    print("Database changed to %s" % database_name)
 
     return database_name
 

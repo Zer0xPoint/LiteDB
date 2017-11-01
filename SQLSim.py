@@ -74,7 +74,11 @@ def use_database(command):
 
 
 def create_table(command):
-    print("create Table")
+    if not Database.use_new_database_name.has_been_called:
+        print("No database selected")
+        get_command("")
+    else:
+        print("create Table")
 
 
 def delete_table(command):
