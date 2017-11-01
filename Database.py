@@ -1,6 +1,7 @@
 import OperatFile
 import re
 import Time
+import os
 from prettytable import PrettyTable
 try:
     import xml.etree.cElementTree as et
@@ -20,6 +21,8 @@ def create_new_database(command):
             new_database = et.SubElement(root, "database", attrib={"name": database_name})
             new_db_date = et.SubElement(new_database, "date")
             new_db_date.text = Time.local_time()
+
+            os.mkdir(database_name)
 
         else:
             print("Can't create database '%s'; database exists" % database_name)
@@ -47,9 +50,10 @@ def drop_new_database(command):
 
 
 def use_new_database_name(command):
+    use_new_database_name.has_been_called = True
     command_parse = re.search(r'drop\s*?database\s(.*)', command)
     database_name = command_parse.group(1).strip()
-    print()
+
     return database_name
 
 
@@ -94,6 +98,7 @@ class Database(object):
 
 
 if __name__ == "__main__":
-    command = input("Input")
+    command = input("Input ")
+
     # drop_database(command)
     # create_new_database(command)

@@ -1,4 +1,4 @@
-class Login():
+class Login:
     def __init__(self):
         self.password = "password"
 

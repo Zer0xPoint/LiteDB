@@ -1,14 +1,18 @@
 from Login import Login
 import SQLSim
+import Database
 
 if __name__ == '__main__':
     login = Login()
-    isAuthored = login.checkPassword()
+    # is_authored = login.checkPassword()
+    is_authored = False
+    Database.use_new_database_name.has_been_called = False
+
     while True:
-        if isAuthored:
+        is_authored = login.checkPassword()
+        if not is_authored:
+            print("login failed, Please check your password and try again")
+        else:
             print("Welcome to LiteDB, a Lite Databases")
             SQLSim.get_command("")
             break
-        else:
-            print("login failed, Please check your password and Renter")
-            isAuthored = login.checkPassword()
