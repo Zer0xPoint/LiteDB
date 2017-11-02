@@ -1,4 +1,5 @@
 import Database
+import Tables
 
 
 def get_command(last_command):
@@ -78,6 +79,7 @@ def create_table(command):
         print("No database selected")
         get_command("")
     else:
+        Tables.create_new_table(command)
         print("create Table")
 
 
