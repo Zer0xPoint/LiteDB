@@ -22,11 +22,11 @@ def create_new_table(command):
         show_table.add_row(table_attrib_list)
 
         # for x in range(len(table_attrib_list)):
-        #     table_field.append(table_attrib_list[0])
-        #     table_type.append(table_attrib_list[1])
+        table_field.append(table_attrib_list[0])
+        table_type.append(table_attrib_list[1])
         # show_table.add_row([table_field[x], table_type[x]])
 
-        # print(table_field, table_type)
+        print(table_field, table_type)
     # print(table_attrib_list)
     # for i in table_infos:
     #     print(table_infos[i].split(" ")[0])
