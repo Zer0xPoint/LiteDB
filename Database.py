@@ -8,6 +8,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as et
 
+now_use_database = ""
 
 def create_new_database(commands):
     command_parse = re.search(r'create\s*?database\s(.*)', commands)
@@ -51,12 +52,13 @@ def drop_new_database(commands):
 
 
 def use_new_database_name(commands):
+    global now_use_database
     use_new_database_name.has_been_called = True
     command_parse = re.search(r'use\s*?(.*)', commands)
-    database_name = command_parse.group(1).strip()
-    print("Database changed to %s" % database_name)
+    now_use_database = command_parse.group(1).strip()
+    print("Database changed to %s" % now_use_database)
 
-    return database_name
+    return now_use_database
 
 
 def show_current_databases():
