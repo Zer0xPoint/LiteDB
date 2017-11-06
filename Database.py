@@ -3,12 +3,14 @@ import re
 import Time
 import os
 from prettytable import PrettyTable
+
 try:
     import xml.etree.cElementTree as et
 except ImportError:
     import xml.etree.ElementTree as et
 
 now_use_database = ""
+
 
 def create_new_database(commands):
     command_parse = re.search(r'create\s*?database\s(.*)', commands)
@@ -53,10 +55,20 @@ def drop_new_database(commands):
 
 def use_new_database_name(commands):
     global now_use_database
-    use_new_database_name.has_been_called = True
     command_parse = re.search(r'use\s*?(.*)', commands)
     now_use_database = command_parse.group(1).strip()
-    print("Database changed to %s" % now_use_database)
+    if command_parse:
+        tree = OperatFile.read_xml("database_index.xml")
+        root = tree.getroot()
+
+        if database_is_exist(root, now_use_database):
+            for child in root:
+                if child.attrib == {"name": now_use_database}:
+                    print("Database changed to %s" % now_use_database)
+                    use_new_database_name.has_been_called = True
+        else:
+            print("Unknown database '%s'" % now_use_database)
+            now_use_database = ""
 
     return now_use_database
 

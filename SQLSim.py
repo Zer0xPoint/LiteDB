@@ -22,7 +22,7 @@ def split_command(command):
             "create": create_database_or_table,
             "drop": drop_database_or_table,
             "use": use_database,
-            "show": show_databases,
+            "show": show_database_or_table,
             "desc": show_table_desc
         }.get(command_split[0], error_info)(command)
     except TypeError:
@@ -59,6 +59,20 @@ def drop_database_or_table(command):
         print("IndexError1")
 
 
+def show_database_or_table(command):
+    command = command.strip()
+    command_split = command.split()
+    try:
+        return {
+            "database": show_databases,
+            "table": show_table_name
+        }.get(command_split[1], error_info)(command)
+    except TypeError:
+        print("TypeError1")
+    except IndexError:
+        print("IndexError1")
+
+
 def create_database(command):
     Database.create_new_database(command)
 
@@ -75,13 +89,20 @@ def use_database(command):
     Database.use_new_database_name(command)
 
 
+def show_table_name(command):
+    if not Database.use_new_database_name.has_been_called:
+        print("No database selected")
+        get_command("")
+    else:
+        Tables.show_table_name(command)
+
+
 def create_table(command):
     if not Database.use_new_database_name.has_been_called:
         print("No database selected")
         get_command("")
     else:
         Tables.create_new_table(command)
-        print("create Table")
 
 
 def delete_table(command):
@@ -89,14 +110,18 @@ def delete_table(command):
 
 
 def show_table_desc(command):
-    Tables.show_table_desc(command)
+    if not Database.use_new_database_name.has_been_called:
+        print("No database selected")
+        get_command("")
+    else:
+        Tables.show_table_desc(command)
 
 
 # def update_table():
 #
 # def show_table():
 #
-# def serach_table():
+# def search_table():
 
 def error_info():
     print("Syntax Error")
