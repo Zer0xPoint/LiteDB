@@ -122,4 +122,3 @@ if __name__ == "__main__":
     command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
     create_new_table(command)
-    # show_table_desc(command)
