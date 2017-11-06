@@ -22,7 +22,8 @@ def split_command(command):
             "create": create_database_or_table,
             "drop": drop_database_or_table,
             "use": use_database,
-            "show": show_databases
+            "show": show_databases,
+            "desc": show_table_desc
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -85,6 +86,10 @@ def create_table(command):
 
 def delete_table(command):
     print("delete Table")
+
+
+def show_table_desc(command):
+    Tables.show_table_desc(command)
 
 
 # def update_table():
