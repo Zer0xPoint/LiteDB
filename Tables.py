@@ -17,46 +17,109 @@ def create_new_table(command):
     table_info_group = table_info_parse.group()
     table_info_list = str(table_info_group)[1:-1].split(",")
 
-    table_field, table_type = [], []
+    primary_key = table_info_list[-1].split()[2]
+    print(primary_key)
+    del table_info_list[-1]
 
-    show_table = PrettyTable(["Field", "Type"])
+    table_field, table_type, table_key = [], [], []
+
+    show_table = PrettyTable()
 
     for i in range(len(table_info_list)):
         table_attrib_list = str(table_info_list[i]).split(" ")
-        print(table_attrib_list)
-        show_table.add_row(table_attrib_list)
 
         table_field.append(table_attrib_list[0])
         table_type.append(table_attrib_list[1])
+        if table_attrib_list[0] == primary_key:
+            table_key.append("pri")
+        else:
+            table_key.append("")
 
-    print(table_field, table_type)
+    show_table.add_column("Field", table_field)
+    show_table.add_column("Type", table_type)
+    show_table.add_column("Key", table_key)
+
+    print(table_field, table_type, table_key)
 
     print(show_table)
-    write_to_excel(table_name, database_name, table_field, table_type)
+
+    write_to_excel(table_name, database_name, table_field, table_type, table_key)
 
 
-def write_to_excel(table_name, database_name, table_field, table_type):
+def write_to_excel(table_name, database_name, table_field, table_type, table_key):
+    database_name = "first"
     excel_file = xlwt.Workbook()
-    sheet = excel_file.add_sheet("test")
+    sheet = excel_file.add_sheet(table_name)
 
-    for field_index, field_enum in enumerate(table_field):
-        sheet.write(field_index, 0, field_enum)
-    for type_index, type_enum in enumerate(table_type):
-        sheet.write(type_index, 1, type_enum)
+    for field_index, field_item in enumerate(table_field):
+        sheet.write(field_index, 0, field_item)
+    for type_index, type_item in enumerate(table_type):
+        sheet.write(type_index, 1, type_item)
+    for key_index, key_item in enumerate(table_key):
+        sheet.write(key_index, 2, key_item)
 
     database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
-    table_dic = database_dic + "/" + table_name
-    table_index_dic = table_dic + "_index.xls"
-    print(table_index_dic)
+    table_dic = database_dic + "/"
+    excel_file_name = table_name + "_index.xls"
+    table_index_dic = table_dic + excel_file_name
+
     excel_file.save(table_index_dic)
 
-# def read_from_excel():
-# def insert_table():
-# def delete_table():
-# def search_table():
-# def show_table():
+    read_from_excel(table_index_dic, table_name)
+
+
+def read_from_excel(table_index_dic, table_name):
+    excel_file = xlrd.open_workbook(table_index_dic)
+    sheet = excel_file.sheet_by_name(table_name)
+    nrows = sheet.nrows
+
+    table_field, table_type, table_key = [], [], []
+
+    for i in range(nrows):
+        row_values = sheet.row_values(i)
+        table_field.append(row_values[0])
+        table_type.append(row_values[1])
+        table_key.append(row_values[2])
+
+    return table_field, table_type, table_key
+
+
+def insert_table_info(command):
+    command_parse = re.search(r"insert\s*?into\s(.*)", command)
+
+
+
+# def delete_table_info():
+# def search_table_info():
+def show_table_desc(command):
+    command_parse = re.search(r"desc\s*?table\s(.*)", command)
+    table_name = command_parse.group(1).strip()
+    table_index_dic = get_table_index_dic(table_name)
+    table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
+    show_table = PrettyTable()
+
+    show_table.add_column("Field", table_field)
+    show_table.add_column("Type", table_type)
+    show_table.add_column("Key", table_key)
+
+    print(show_table)
+
+
+# def show_table_info():
+
+def get_table_index_dic(table_name):
+    database_name = Database.now_use_database
+    database_name = "first"
+    database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
+    table_dic = database_dic + "/"
+    excel_file_name = table_name + "_index.xls"
+    table_index_dic = table_dic + excel_file_name
+
+    return table_index_dic
 
 
 if __name__ == "__main__":
-    command = "create table test (name varchar(20),id int,birth int,salary int)"
+    command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
+    # command = "desc table test"
     create_new_table(command)
+    # show_table_desc(command)
