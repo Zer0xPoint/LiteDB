@@ -57,11 +57,6 @@ def write_to_excel(table_name, database_name, table_field, table_type, table_key
     for key_index, key_item in enumerate(table_key):
         sheet.write(key_index, 2, key_item)
 
-    # database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
-    # table_dic = database_dic + "/"
-    # excel_file_name = table_name + "_index.xls"
-    # table_index_dic = table_dic + excel_file_name
-
     table_index_dic = get_table_index_dic(table_name)
 
     excel_file.save(table_index_dic)
@@ -84,7 +79,25 @@ def read_from_excel(table_index_dic, table_name):
 
 
 def insert_table_info(command):
-    command_parse = re.search(r"insert\s*?into\s(.*)", command)
+    table_name_parse = re.search(r".*?(?=\()", command)
+    table_name = table_name_parse.group().split(" ")[2]
+    replace_parse = "insert into" + table_name
+    command = command.replace(replace_parse, "")
+
+    table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
+    table_info_group = table_info_parse.group()
+    table_info_list = str(table_info_group)[1:-1].split(",")
+
+    table_index_dic = get_table_index_dic(table_name)
+
+    table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
+    # add sheet if not exist
+    # check if item in list can match item in field
+    # check the type of attrib
+    show_table = PrettyTable(table_field)
+    print(show_table)
+    print(table_info_list)
+    print(table_index_dic)
 
 
 # def delete_table_info():
@@ -109,10 +122,12 @@ def show_table_name(command):
     file_list = os.listdir(file_dir)
     print(file_list)
 
+
 # def show_table_info():
 
 def get_table_index_dic(table_name):
     database_name = Database.now_use_database
+    database_name = "first"
     database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
     table_dic = database_dic + "/"
     excel_file_name = table_name + ".xls"
@@ -121,19 +136,10 @@ def get_table_index_dic(table_name):
     return table_index_dic
 
 
-def Test2(rootdir):
-    list = os.listdir(rootdir)  # 列出目录下的所有文件和目录
-    print(list)
-    for line in list:
-        filepath = os.path.join(rootdir, line)
-        if os.path.isdir(filepath):  # 如果filepath是目录
-            print("dir:" + filepath)
-        else:
-            print("file:" + filepath)
-
-
 if __name__ == "__main__":
-    command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
+    # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
+    command = "insert into test01 (Lee, 1, 19950612, 3000)"
     # create_new_table(command)
     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
+    insert_table_info(command)
