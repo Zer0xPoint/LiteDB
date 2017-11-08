@@ -64,8 +64,8 @@ def show_database_or_table(command):
     command_split = command.split()
     try:
         return {
-            "database": show_databases,
-            "table": show_table_name
+            "databases": show_databases,
+            "tables": show_table_name
         }.get(command_split[1], error_info)(command)
     except TypeError:
         print("TypeError1")

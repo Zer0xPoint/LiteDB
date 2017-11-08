@@ -5,6 +5,7 @@ from prettytable import PrettyTable
 import Database
 import xlrd
 import xlwt
+from xlutils.copy import copy
 
 
 def create_new_table(command):
@@ -19,7 +20,6 @@ def create_new_table(command):
     table_info_list = str(table_info_group)[1:-1].split(",")
 
     primary_key = table_info_list[-1].split()[2]
-    print(primary_key)
     del table_info_list[-1]
 
     table_field, table_type, table_key = [], [], []
@@ -39,8 +39,6 @@ def create_new_table(command):
     show_table.add_column("Field", table_field)
     show_table.add_column("Type", table_type)
     show_table.add_column("Key", table_key)
-
-    print(table_field, table_type, table_key)
 
     print(show_table)
     write_to_excel(table_name, database_name, table_field, table_type, table_key)
@@ -92,12 +90,30 @@ def insert_table_info(command):
 
     table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
     # add sheet if not exist
-    # check if item in list can match item in field
+
     # check the type of attrib
-    show_table = PrettyTable(table_field)
-    print(show_table)
-    print(table_info_list)
-    print(table_index_dic)
+    if is_attrib_match_type(table_type, table_info_list):
+        # check if item in list can match item in field
+        if len(table_info_list) == len(table_field):
+            show_table = PrettyTable(table_field)
+            show_table.add_row(table_info_list)
+            print(show_table)
+            print(table_index_dic)
+
+            read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
+            write_excel_file = copy(read_excel_file)
+            sheet = write_excel_file.add_sheet("infos")
+
+            for field_index, field_item in enumerate(table_field):
+                sheet.write(0, field_index, field_item)
+            for info_index, info_item in enumerate(table_info_list):
+                sheet.write(1, info_index, info_item)
+
+            write_excel_file.save(table_index_dic)
+        else:
+            print("Column count doesn't match value count")
+    else:
+        print("Column doesn't match value type")
 
 
 # def delete_table_info():
@@ -120,14 +136,20 @@ def show_table_desc(command):
 def show_table_name(command):
     file_dir = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + Database.now_use_database
     file_list = os.listdir(file_dir)
-    print(file_list)
+    new_line = "\n"
+    new_line = new_line.join(file_list)
+    new_line = new_line.replace(".xls", "")
+    show_table = PrettyTable(["Tables_in_%s" % Database.now_use_database])
+    show_table.add_row([new_line])
+    print(show_table)
+    return file_list
 
 
 # def show_table_info():
 
 def get_table_index_dic(table_name):
     database_name = Database.now_use_database
-    database_name = "first"
+    # database_name = "first"
     database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
     table_dic = database_dic + "/"
     excel_file_name = table_name + ".xls"
@@ -136,10 +158,44 @@ def get_table_index_dic(table_name):
     return table_index_dic
 
 
+def table_is_exist(table_name):
+    node_count = 0
+    exist_table_name_list = show_table_name(table_name)
+    for name in exist_table_name_list:
+        if table_name == name:
+            node_count = node_count + 1
+        else:
+            continue
+    if node_count == 0:
+        return False
+    else:
+        return True
+
+
+def is_attrib_match_type(table_type, table_info_list):
+    flag = 0
+    for type_index, type_item in enumerate(table_type):
+        for info_index, info_item in enumerate(table_info_list):
+            if type_index == info_index:
+                if (info_item.isalnum() and type_item == "int") or (info_item.isalpha() and type_item == "char"):
+                    print(info_item, info_index)
+                    print(type_item, type_index)
+                else:
+                    print(info_item, info_index)
+                    print(type_item, type_index)
+                    count = flag + 1
+                    continue
+    if flag == 0:
+        return True
+    else:
+        return False
+
+
 if __name__ == "__main__":
     # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
     command = "insert into test01 (Lee, 1, 19950612, 3000)"
     # create_new_table(command)
     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
-    insert_table_info(command)
+    # insert_table_info(command)
+    show_table_name(command)
