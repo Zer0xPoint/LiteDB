@@ -43,10 +43,10 @@ def create_new_table(command):
     show_table.add_column("Key", table_key)
 
     print(show_table)
-    write_to_excel(table_name, database_name, table_field, table_type, table_key)
+    write_to_excel(table_name, table_field, table_type, table_key)
 
 
-def write_to_excel(table_name, database_name, table_field, table_type, table_key):
+def write_to_excel(table_name, table_field, table_type, table_key):
     excel_file = xlwt.Workbook()
     sheet = excel_file.add_sheet(table_name)
 
@@ -102,17 +102,21 @@ def insert_table_info(command):
             print(show_table)
             print(table_index_dic)
 
-            # add sheet if sheet not exist
             read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
             write_excel_file = copy(read_excel_file)
-            sheet = write_excel_file.add_sheet("infos")
 
-            for field_index, field_item in enumerate(table_field):
-                sheet.write(0, field_index, field_item)
-            for info_index, info_item in enumerate(table_info_list):
-                sheet.write(1, info_index, info_item)
+            sheets_list = read_excel_file.sheet_names()
+            if "infos" in sheets_list:
+                print("sheet exist")
+            else:
+                sheet = write_excel_file.add_sheet("infos")
 
-            write_excel_file.save(table_index_dic)
+                for field_index, field_item in enumerate(table_field):
+                    sheet.write(0, field_index, field_item)
+                for info_index, info_item in enumerate(table_info_list):
+                    sheet.write(1, info_index, info_item)
+
+                write_excel_file.save(table_index_dic)
 
         else:
             print("Column count doesn't match value count")
@@ -185,19 +189,13 @@ def is_attrib_match_type(table_type, table_info_list):
         for info_index, info_item in enumerate(table_info_list):
             if type_index == info_index:
                 if (info_item.isalnum() and type_item == "int") or (info_item.isalpha() and type_item == "char"):
-                    print(info_index, type_index)
-                    print(info_item, type_item)
                     flag = flag
                 else:
-                    print(info_index, type_index)
-                    print(info_item, type_item)
                     flag = flag + 1
                     continue
     if flag == 0:
-        print(flag)
         return True
     else:
-        print(flag)
         return False
 
 

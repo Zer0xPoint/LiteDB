@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d266247-1ef6-4347-86b9-b8f0d3f8cf88" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SQLSim.py" afterPath="$PROJECT_DIR$/SQLSim.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tables.py" afterPath="$PROJECT_DIR$/Tables.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,18 +14,18 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/LiteDB$Tables.coverage" NAME="Tables Coverage Results" MODIFIED="1510194262995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/LiteDB$LiteDB.coverage" NAME="LiteDB Coverage Results" MODIFIED="1510198096979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LiteDB$LiteDB.coverage" NAME="LiteDB Coverage Results" MODIFIED="1510200247301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf>
       <file leaf-file-name="Tables.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1221">
-              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="314">
+              <caret line="155" column="20" lean-forward="true" selection-start-line="155" selection-start-column="20" selection-end-line="155" selection-end-column="20" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <marker date="1510198207110" expanded="true" signature="6952:6992" ph="insert into test01... " />
+                <marker date="1510200820648" expanded="true" signature="6818:6858" ph="insert into test01... " />
               </folding>
             </state>
           </provider>
@@ -278,13 +277,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/xlrd/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1221">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="314">
+          <caret line="155" column="20" lean-forward="true" selection-start-line="155" selection-start-column="20" selection-end-line="155" selection-end-column="20" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <marker date="1510198207110" expanded="true" signature="6952:6992" ph="insert into test01... " />
+            <marker date="1510200820648" expanded="true" signature="6818:6858" ph="insert into test01... " />
           </folding>
         </state>
       </provider>
