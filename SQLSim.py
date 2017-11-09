@@ -23,7 +23,8 @@ def split_command(command):
             "drop": drop_database_or_table,
             "use": use_database,
             "show": show_database_or_table,
-            "desc": show_table_desc
+            "desc": show_table_desc,
+            "insert": insert_into_table
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -117,11 +118,30 @@ def show_table_desc(command):
         Tables.show_table_desc(command)
 
 
+def insert_into_table(command):
+    # if not Database.use_new_database_name.has_been_called:
+    #     print("No database selected")
+    #     get_command("")
+    # else:
+    #     Tables.insert_table_info(command)
+    if is_use_database():
+        Tables.insert_table_info(command)
+    else:
+        get_command("")
+
+
 # def update_table():
 #
 # def show_table():
 #
 # def search_table():
+def is_use_database():
+    if not Database.use_new_database_name.has_been_called:
+        print("No database selected")
+        return False
+    else:
+        return True
+
 
 def error_info():
     print("Syntax Error")

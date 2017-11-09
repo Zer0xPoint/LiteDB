@@ -6,6 +6,7 @@ import Database
 import xlrd
 import xlwt
 from xlutils.copy import copy
+import SQLSim
 
 
 def create_new_table(command):
@@ -18,6 +19,7 @@ def create_new_table(command):
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
     table_info_group = table_info_parse.group()
     table_info_list = str(table_info_group)[1:-1].split(",")
+    table_info_list = remove_space_in_list(table_info_list)
 
     primary_key = table_info_list[-1].split()[2]
     del table_info_list[-1]
@@ -85,11 +87,11 @@ def insert_table_info(command):
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
     table_info_group = table_info_parse.group()
     table_info_list = str(table_info_group)[1:-1].split(",")
+    table_info_list = remove_space_in_list(table_info_list)
 
     table_index_dic = get_table_index_dic(table_name)
 
     table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
-    # add sheet if not exist
 
     # check the type of attrib
     if is_attrib_match_type(table_type, table_info_list):
@@ -100,6 +102,7 @@ def insert_table_info(command):
             print(show_table)
             print(table_index_dic)
 
+            # add sheet if sheet not exist
             read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
             write_excel_file = copy(read_excel_file)
             sheet = write_excel_file.add_sheet("infos")
@@ -110,6 +113,7 @@ def insert_table_info(command):
                 sheet.write(1, info_index, info_item)
 
             write_excel_file.save(table_index_dic)
+
         else:
             print("Column count doesn't match value count")
     else:
@@ -120,17 +124,20 @@ def insert_table_info(command):
 # def search_table_info():
 def show_table_desc(command):
     command_parse = re.search(r"desc\s*?table\s(.*)", command)
-    table_name = command_parse.group(1).strip()
-    table_index_dic = get_table_index_dic(table_name)
+    try:
+        table_name = command_parse.group(1).strip()
+        table_index_dic = get_table_index_dic(table_name)
 
-    table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
-    show_table = PrettyTable()
+        table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
+        show_table = PrettyTable()
 
-    show_table.add_column("Field", table_field)
-    show_table.add_column("Type", table_type)
-    show_table.add_column("Key", table_key)
+        show_table.add_column("Field", table_field)
+        show_table.add_column("Type", table_type)
+        show_table.add_column("Key", table_key)
 
-    print(show_table)
+        print(show_table)
+    except AttributeError:
+        SQLSim.error_info()
 
 
 def show_table_name(command):
@@ -178,24 +185,32 @@ def is_attrib_match_type(table_type, table_info_list):
         for info_index, info_item in enumerate(table_info_list):
             if type_index == info_index:
                 if (info_item.isalnum() and type_item == "int") or (info_item.isalpha() and type_item == "char"):
-                    print(info_item, info_index)
-                    print(type_item, type_index)
+                    print(info_index, type_index)
+                    print(info_item, type_item)
+                    flag = flag
                 else:
-                    print(info_item, info_index)
-                    print(type_item, type_index)
-                    count = flag + 1
+                    print(info_index, type_index)
+                    print(info_item, type_item)
+                    flag = flag + 1
                     continue
     if flag == 0:
+        print(flag)
         return True
     else:
+        print(flag)
         return False
+
+
+def remove_space_in_list(some_list):
+    some_list = [item.strip(" ") for item in some_list]
+    return some_list
 
 
 if __name__ == "__main__":
     # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
-    command = "insert into test01 (Lee, 1, 19950612, 3000)"
+    command = "insert into test01 (Lee,1,19950612,3000)"
     # create_new_table(command)
     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
-    # insert_table_info(command)
-    show_table_name(command)
+    insert_table_info(command)
+    # show_table_name(command)
