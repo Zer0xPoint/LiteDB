@@ -25,7 +25,8 @@ def split_command(command):
             "show": show_database_or_table,
             "desc": show_table_desc,
             "insert": insert_into_table,
-            "select": search_table
+            "select": search_table,
+            "delete": delete_table_infos
         }.get(command_split[0], error_info)(command)
     except TypeError:
         print("TypeError")
@@ -53,7 +54,7 @@ def drop_database_or_table(command):
     try:
         return {
             "database": drop_database,
-            "table": delete_table
+            "table": drop_table
         }.get(command_split[1], error_info)(command)
     except TypeError:
         print("TypeError1")
@@ -107,9 +108,16 @@ def create_table(command):
         Tables.create_new_table(command)
 
 
-def delete_table(command):
+def drop_table(command):
     if is_use_database():
-        Tables.delete_table_info(command)
+        Tables.drop_table_file(command)
+    else:
+        get_command("")
+
+
+def delete_table_infos(command):
+    if is_use_database():
+        Tables.delete_table_infos(command)
     else:
         get_command("")
 

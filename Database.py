@@ -48,13 +48,12 @@ def drop_new_database(commands):
                 for child in root:
                     if child.attrib == {"name": database_name}:
                         root.remove(child)
+            OperatFile.write_xml(tree, "database_index.xml")
 
         except OSError:
             print("Database is not empty")
         else:
             print("Can't drop database '%s'; database doesn't exist" % database_name)
-
-        OperatFile.write_xml(tree, "database_index.xml")
 
 
 def use_new_database_name(commands):

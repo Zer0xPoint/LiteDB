@@ -77,22 +77,22 @@ def read_table_attrib_from_excel(table_index_dic, table_name):
         print("Can't find table '%s'" % table_name)
 
 
-def read_table_info_from_excel(table_index_dic, table_name):
+def read_table_infos_from_excel(table_index_dic, table_name):
     try:
         excel_file = xlrd.open_workbook(table_index_dic)
         sheet = excel_file.sheet_by_index(1)
         rows = sheet.nrows
         cols = sheet.ncols
 
-        table_field, table_type = [], []
+        table_type, table_info = [], []
 
         for i in range(cols):
             # row_values = sheet.row_values(i)
             col_values = sheet.col_values(i)
-            table_field.append(col_values[0])
-            table_type.append(col_values[1:])
+            table_type.append(col_values[0])
+            table_info.append(col_values[1:])
 
-        return table_field, table_type
+        return table_type, table_info
     except FileNotFoundError:
         print("Can't find table '%s'" % table_name)
     except IndexError:
@@ -151,8 +151,38 @@ def insert_table_info(command):
         print("Column doesn't match value type")
 
 
-def delete_table_info(command):
-    print("")
+def drop_table_file(command):
+    command_parse = re.search(r'drop\s*?table\s(.*)', command)
+    table_name = command_parse.group(1).strip()
+
+    if command_parse:
+        table_index_dic = get_table_index_dic(table_name)
+        os.remove(table_index_dic)
+
+
+def delete_table_infos(command):
+    command_parse = re.search(r'delete\s.*?from\s(.*)', command)
+    if command_parse:
+        table_name = command_parse.group(1).strip()
+        table_index_dic = get_table_index_dic(table_name)
+
+        read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
+        write_excel_file = copy(read_excel_file)
+
+        sheets_list = read_excel_file.sheet_names()
+        table_type, table_info = read_table_infos_from_excel(table_index_dic, table_name)
+
+        if "infos" in sheets_list:
+            sheet = write_excel_file.get_sheet(1)
+
+            for type_index, type_item in enumerate(table_type):
+                sheet.write(0, type_index, type_item)
+            for info_index, info_item in enumerate(table_info):
+                sheet.write(1, info_index, "")
+        else:
+            print("No info to delete")
+
+        write_excel_file.save(table_index_dic)
 
 
 def search_table_info(command):
@@ -162,7 +192,7 @@ def search_table_info(command):
         table_name = command_parse.group(2).strip()
         table_index_dic = get_table_index_dic(table_name)
 
-        table_type, table_info = read_table_info_from_excel(table_index_dic, table_name)
+        table_type, table_info = read_table_infos_from_excel(table_index_dic, table_name)
         show_table = PrettyTable()
 
         for row in range(len(table_info)):
@@ -203,7 +233,7 @@ def show_table_name(command):
 
 def get_table_index_dic(table_name):
     database_name = Database.now_use_database
-    # database_name = "first"
+    # database_name = "test"
     database_dic = "/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/" + database_name
     table_dic = database_dic + "/"
     excel_file_name = table_name + ".xls"
@@ -248,12 +278,14 @@ def remove_space_in_list(some_list):
 
 
 if __name__ == "__main__":
-    # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
+    command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
     # command = "insert into test01 (Lee,1,19950612,3000)"
-    command = "select * from test01"
+    # command = "select * from test01"
+    # command = "delete * from test01"
     # create_new_table(command)
     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
     # insert_table_info(command)
     # show_table_name(command)
-    search_table_info(command)
+    # search_table_info(command)
+    # delete_table_infos(command)
