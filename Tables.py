@@ -12,8 +12,7 @@ import SQLSim
 def create_new_table(command):
     table_name_parse = re.search(r".*?(?=\()", command)
     table_name = table_name_parse.group().split(" ")[2]
-    database_name = Database.now_use_database
-    replace_parse = "create table " + table_name
+    replace_parse = "create table " + str(table_name)
     command = command.replace(replace_parse, "")
 
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
@@ -47,19 +46,23 @@ def create_new_table(command):
 
 
 def write_to_excel(table_name, table_field, table_type, table_key):
-    excel_file = xlwt.Workbook()
-    sheet = excel_file.add_sheet(table_name)
+    try:
+        excel_file = xlwt.Workbook()
+        sheet = excel_file.add_sheet(table_name)
 
-    for field_index, field_item in enumerate(table_field):
-        sheet.write(field_index, 0, field_item)
-    for type_index, type_item in enumerate(table_type):
-        sheet.write(type_index, 1, type_item)
-    for key_index, key_item in enumerate(table_key):
-        sheet.write(key_index, 2, key_item)
+        for field_index, field_item in enumerate(table_field):
+            sheet.write(field_index, 0, field_item)
+        for type_index, type_item in enumerate(table_type):
+            sheet.write(type_index, 1, type_item)
+        for key_index, key_item in enumerate(table_key):
+            sheet.write(key_index, 2, key_item)
 
-    table_index_dic = get_table_index_dic(table_name)
+        table_index_dic = get_table_index_dic(table_name)
 
-    excel_file.save(table_index_dic)
+        excel_file.save(table_index_dic)
+        print("create table success")
+    except IOError:
+        print("Can't create/write to file '%s'." % table_name)
 
 
 def read_from_excel(table_index_dic, table_name):
@@ -81,7 +84,7 @@ def read_from_excel(table_index_dic, table_name):
 def insert_table_info(command):
     table_name_parse = re.search(r".*?(?=\()", command)
     table_name = table_name_parse.group().split(" ")[2]
-    replace_parse = "insert into" + table_name
+    replace_parse = "insert into" + str(table_name)
     command = command.replace(replace_parse, "")
 
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
