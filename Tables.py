@@ -39,22 +39,23 @@ def create_new_table(command):
 
 
 def write_to_excel(table_name, table_field, table_type, table_key):
-    excel_file = xlwt.Workbook()
-    sheet = excel_file.add_sheet(table_name)
-
-    for field_index, field_item in enumerate(table_field):
-        sheet.write(field_index, 0, field_item)
-    for type_index, type_item in enumerate(table_type):
-        sheet.write(type_index, 1, type_item)
-    for key_index, key_item in enumerate(table_key):
-        sheet.write(key_index, 2, key_item)
-
-    table_index_dic = get_table_index_dic(table_name)
-
     try:
+        excel_file = xlwt.Workbook()
+        sheet = excel_file.add_sheet(table_name)
+
+        for field_index, field_item in enumerate(table_field):
+            sheet.write(field_index, 0, field_item)
+        for type_index, type_item in enumerate(table_type):
+            sheet.write(type_index, 1, type_item)
+        for key_index, key_item in enumerate(table_key):
+            sheet.write(key_index, 2, key_item)
+
+        table_index_dic = get_table_index_dic(table_name)
+
         excel_file.save(table_index_dic)
+        print("create table success")
     except IOError:
-        print("Can't create table '%s'" % table_name)
+        print("Can't create/write to file '%s'." % table_name)
 
 
 def read_from_excel(table_index_dic, table_name):
