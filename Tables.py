@@ -12,8 +12,7 @@ import SQLSim
 def create_new_table(command):
     table_name_parse = re.search(r".*?(?=\()", command)
     table_name = table_name_parse.group().split(" ")[2]
-    database_name = Database.now_use_database
-    replace_parse = "create table " + table_name
+    replace_parse = "create table " + str(table_name)
     command = command.replace(replace_parse, "")
 
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
@@ -26,8 +25,6 @@ def create_new_table(command):
 
     table_field, table_type, table_key = [], [], []
 
-    show_table = PrettyTable()
-
     for i in range(len(table_info_list)):
         table_attrib_list = str(table_info_list[i]).split(" ")
 
@@ -38,11 +35,6 @@ def create_new_table(command):
         else:
             table_key.append("")
 
-    show_table.add_column("Field", table_field)
-    show_table.add_column("Type", table_type)
-    show_table.add_column("Key", table_key)
-
-    print(show_table)
     write_to_excel(table_name, table_field, table_type, table_key)
 
 
@@ -59,29 +51,35 @@ def write_to_excel(table_name, table_field, table_type, table_key):
 
     table_index_dic = get_table_index_dic(table_name)
 
-    excel_file.save(table_index_dic)
+    try:
+        excel_file.save(table_index_dic)
+    except IOError:
+        print("Can't create table '%s'" % table_name)
 
 
 def read_from_excel(table_index_dic, table_name):
-    excel_file = xlrd.open_workbook(table_index_dic)
-    sheet = excel_file.sheet_by_name(table_name)
-    nrows = sheet.nrows
+    try:
+        excel_file = xlrd.open_workbook(table_index_dic)
+        sheet = excel_file.sheet_by_name(table_name)
+        nrows = sheet.nrows
 
-    table_field, table_type, table_key = [], [], []
+        table_field, table_type, table_key = [], [], []
 
-    for i in range(nrows):
-        row_values = sheet.row_values(i)
-        table_field.append(row_values[0])
-        table_type.append(row_values[1])
-        table_key.append(row_values[2])
+        for i in range(nrows):
+            row_values = sheet.row_values(i)
+            table_field.append(row_values[0])
+            table_type.append(row_values[1])
+            table_key.append(row_values[2])
 
-    return table_field, table_type, table_key
+        return table_field, table_type, table_key
+    except FileNotFoundError:
+        print("Can't find table '%s'" % table_name)
 
 
 def insert_table_info(command):
     table_name_parse = re.search(r".*?(?=\()", command)
     table_name = table_name_parse.group().split(" ")[2]
-    replace_parse = "insert into" + table_name
+    replace_parse = "insert into" + str(table_name)
     command = command.replace(replace_parse, "")
 
     table_info_parse = regex.search(r"\((?:[^{}]|(?R))*\)", command)
