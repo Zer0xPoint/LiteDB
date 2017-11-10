@@ -1,8 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <databases>
-	<database name="first">
-		<date>Sun Oct 29 21:23:37 2017</date>
-	</database>
 	<database name="test">
 		<date>Tue Nov 07 14:46:49 2017</date>
 	</database>

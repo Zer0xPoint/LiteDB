@@ -58,7 +58,7 @@ def write_to_excel(table_name, table_field, table_type, table_key):
         print("Can't create/write to file '%s'." % table_name)
 
 
-def read_from_excel(table_index_dic, table_name):
+def read_table_attrib_from_excel(table_index_dic, table_name):
     try:
         excel_file = xlrd.open_workbook(table_index_dic)
         sheet = excel_file.sheet_by_name(table_name)
@@ -77,6 +77,28 @@ def read_from_excel(table_index_dic, table_name):
         print("Can't find table '%s'" % table_name)
 
 
+def read_table_info_from_excel(table_index_dic, table_name):
+    try:
+        excel_file = xlrd.open_workbook(table_index_dic)
+        sheet = excel_file.sheet_by_index(1)
+        rows = sheet.nrows
+        cols = sheet.ncols
+
+        table_field, table_type = [], []
+
+        for i in range(cols):
+            # row_values = sheet.row_values(i)
+            col_values = sheet.col_values(i)
+            table_field.append(col_values[0])
+            table_type.append(col_values[1:])
+
+        return table_field, table_type
+    except FileNotFoundError:
+        print("Can't find table '%s'" % table_name)
+    except IndexError:
+        print("Can't find any information")
+
+
 def insert_table_info(command):
     table_name_parse = re.search(r".*?(?=\()", command)
     table_name = table_name_parse.group().split(" ")[2]
@@ -90,7 +112,7 @@ def insert_table_info(command):
 
     table_index_dic = get_table_index_dic(table_name)
 
-    table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
+    table_field, table_type, table_key = read_table_attrib_from_excel(table_index_dic, table_name)
 
     # check the type of attrib
     if is_attrib_match_type(table_type, table_info_list):
@@ -105,8 +127,14 @@ def insert_table_info(command):
             write_excel_file = copy(read_excel_file)
 
             sheets_list = read_excel_file.sheet_names()
+
             if "infos" in sheets_list:
-                print("sheet exist")
+                read_sheet = read_excel_file.sheet_by_index(1)
+                write_sheet = write_excel_file.get_sheet(1)
+                rows = read_sheet.nrows
+
+                for info_index, info_item in enumerate(table_info_list):
+                    write_sheet.write(rows, info_index, info_item)
             else:
                 sheet = write_excel_file.add_sheet("infos")
 
@@ -115,7 +143,7 @@ def insert_table_info(command):
                 for info_index, info_item in enumerate(table_info_list):
                     sheet.write(1, info_index, info_item)
 
-                write_excel_file.save(table_index_dic)
+            write_excel_file.save(table_index_dic)
 
         else:
             print("Column count doesn't match value count")
@@ -123,15 +151,33 @@ def insert_table_info(command):
         print("Column doesn't match value type")
 
 
-# def delete_table_info():
-# def search_table_info():
+def delete_table_info(command):
+    print("")
+
+
+def search_table_info(command):
+    command_parse = re.search(r'select\s(.*?)from\s(.*)', command)
+    if command_parse:
+        select_expr = command_parse.group(1).strip()
+        table_name = command_parse.group(2).strip()
+        table_index_dic = get_table_index_dic(table_name)
+
+        table_type, table_info = read_table_info_from_excel(table_index_dic, table_name)
+        show_table = PrettyTable()
+
+        for row in range(len(table_info)):
+            show_table.add_column(table_type[row], table_info[row])
+
+        print(show_table)
+
+
 def show_table_desc(command):
     command_parse = re.search(r"desc\s*?table\s(.*)", command)
     try:
         table_name = command_parse.group(1).strip()
         table_index_dic = get_table_index_dic(table_name)
 
-        table_field, table_type, table_key = read_from_excel(table_index_dic, table_name)
+        table_field, table_type, table_key = read_table_attrib_from_excel(table_index_dic, table_name)
         show_table = PrettyTable()
 
         show_table.add_column("Field", table_field)
@@ -154,8 +200,6 @@ def show_table_name(command):
     print(show_table)
     return file_list
 
-
-# def show_table_info():
 
 def get_table_index_dic(table_name):
     database_name = Database.now_use_database
@@ -206,8 +250,10 @@ def remove_space_in_list(some_list):
 if __name__ == "__main__":
     # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
     # command = "desc table test"
-    command = "insert into test01 (Lee,1,19950612,3000)"
+    # command = "insert into test01 (Lee,1,19950612,3000)"
+    command = "select * from test01"
     # create_new_table(command)
     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
-    insert_table_info(command)
+    # insert_table_info(command)
     # show_table_name(command)
+    search_table_info(command)

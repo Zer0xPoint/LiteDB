@@ -41,12 +41,16 @@ def drop_new_database(commands):
         tree = OperatFile.read_xml("database_index.xml")
         root = tree.getroot()
 
-        if database_is_exist(root, database_name):
-            for child in root:
-                if child.attrib == {"name": database_name}:
-                    root.remove(child)
+        try:
+            os.rmdir("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/%s" % database_name)
 
-                    os.rmdir("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/%s" % database_name)
+            if database_is_exist(root, database_name):
+                for child in root:
+                    if child.attrib == {"name": database_name}:
+                        root.remove(child)
+
+        except OSError:
+            print("Database is not empty")
         else:
             print("Can't drop database '%s'; database doesn't exist" % database_name)
 
