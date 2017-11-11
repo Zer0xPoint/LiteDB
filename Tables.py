@@ -118,11 +118,6 @@ def insert_table_info(command):
     if is_attrib_match_type(table_type, table_info_list):
         # check if item in list can match item in field
         if len(table_info_list) == len(table_field):
-            show_table = PrettyTable(table_field)
-            show_table.add_row(table_info_list)
-            print(show_table)
-            print(table_index_dic)
-
             read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
             write_excel_file = copy(read_excel_file)
 
@@ -167,6 +162,7 @@ def delete_table_infos(command):
         table_index_dic = get_table_index_dic(table_name)
 
         read_excel_file = xlrd.open_workbook(table_index_dic, formatting_info=True)
+        read_sheet = read_excel_file.sheet_by_index(1)
         write_excel_file = copy(read_excel_file)
 
         sheets_list = read_excel_file.sheet_names()
@@ -175,10 +171,13 @@ def delete_table_infos(command):
         if "infos" in sheets_list:
             sheet = write_excel_file.get_sheet(1)
 
-            for type_index, type_item in enumerate(table_type):
-                sheet.write(0, type_index, type_item)
-            for info_index, info_item in enumerate(table_info):
-                sheet.write(1, info_index, "")
+            for row in range(read_sheet.nrows):
+                if row == 0:
+                    for type_index, type_item in enumerate(table_type):
+                        sheet.write(0, type_index, type_item)
+                else:
+                    for info_index, info_item in enumerate(table_info):
+                        sheet.write(row, info_index, "")
         else:
             print("No info to delete")
 
@@ -277,15 +276,15 @@ def remove_space_in_list(some_list):
     return some_list
 
 
-if __name__ == "__main__":
-    command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
-    # command = "desc table test"
-    # command = "insert into test01 (Lee,1,19950612,3000)"
-    # command = "select * from test01"
-    # command = "delete * from test01"
-    # create_new_table(command)
-    # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
-    # insert_table_info(command)
-    # show_table_name(command)
-    # search_table_info(command)
-    # delete_table_infos(command)
+# if __name__ == "__main__":
+#     # command = "create table test01 (name char,id int,birth int,salary int,primary key id)"
+#     # command = "desc table test"
+#     # command = "insert into test01 (Lee,1,19950612,3000)"
+#     # command = "select * from test01"
+#     command = "delete * from test01"
+#     # create_new_table(command)
+#     # Test2("/Users/rileylee/Documents/PyCharmProjects/LiteDB/Databases/first")
+#     # insert_table_info(command)
+#     # show_table_name(command)
+#     # search_table_info(command)
+#     delete_table_infos(command)
