@@ -187,7 +187,7 @@ def delete_table_infos(command):
 def search_table_info(command):
     command_parse = re.search(r'select\s(.*?)from\s(.*)', command)
     if command_parse:
-        select_expr = command_parse.group(1).strip()
+        # select_expr = command_parse.group(1).strip()
         table_name = command_parse.group(2).strip()
         table_index_dic = get_table_index_dic(table_name)
 
