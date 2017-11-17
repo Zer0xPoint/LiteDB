@@ -1,3 +1,2 @@
-def alter_index():
-def delete_index():
-    
+# def alter_index():
+# def delete_index():
